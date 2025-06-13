@@ -7,6 +7,9 @@
 :root {
   --font-sans: "Poppins", sans-serif;
   --primary: #8b5cf6;
+  --primary-100: #c7bae9;
+  --primary-200: #a18cec;
+  --gray-60: #333/50;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -58,7 +61,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
+  --color-ring: var(--primary-100);
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);

@@ -8,3 +8,23 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   display: none;
 }
+.peer:checked ~ div img {
+  filter: invert(1);
+}
+
+input[type="radio"] ~ div img {
+  filter: invert(0.6) grayscale(1);
+}
+
+input[type="radio"]:checked ~ div img {
+  filter: invert(32%) sepia(74%) saturate(578%) hue-rotate(210deg)
+    brightness(97%) contrast(90%);
+}
+input[type="radio"]:checked ~ div p {
+  color: var(--primary-foreground);
+  font-weight: 400;
+}
+input[type="radio"] ~ div p {
+  color: var(--muted-foreground);
+  font-weight: 500;
+}

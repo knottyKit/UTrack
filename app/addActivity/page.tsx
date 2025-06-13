@@ -1,10 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,35 +12,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import "./index.css";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import Image from "next/image";
+import { images } from "@/constants/images";
+import "./index.css";
+import { FormSchemaType, useInputForm } from "./addActivity.hooks";
 
-const FormSchema = z.object({
-  type: z.enum(["borrower", "lender"]), // from radio input
-  title: z.string().min(1, { message: "Title is required" }),
-  amount: z.coerce.number().gt(0, { message: "Amount must be greater than 0" }), // use `coerce` for number input
-  username: z
-    .string()
-    .min(1, { message: "Email is required." })
-    .email({ message: "Please enter a valid email address." }),
-  description: z.string().optional(), // optional textarea
-});
 export default function InputForm() {
-  const [member, setMember] = useState<"Lender" | "Borrower">("Lender");
+  const form = useInputForm();
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      type: "borrower",
-      title: "",
-      amount: 0,
-      username: "",
-      description: "",
-    },
-  });
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: FormSchemaType) {
     console.log("Submitted Data:", data);
     toast("You submitted the following values", {
       description: (
@@ -67,44 +44,47 @@ export default function InputForm() {
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
-
+                <FormLabel>What are you tracking?</FormLabel>
                 <div className="flex items-center gap-2">
-                  <label htmlFor="borrower" className="block">
-                    <input
-                      type="radio"
-                      id="borrower"
-                      name="type"
-                      value="borrower"
-                      checked={field.value === "borrower"}
-                      className="peer hidden"
-                      onChange={() => {
-                        field.onChange("borrower");
-                        setMember("Lender");
-                      }} // 👈 Borrower selected => member = Lender
-                    />
-                    <div className="h-[50px] border bg-amber-200 peer-checked:border-primary rounded-md flex items-center justify-center">
-                      Borrow
-                    </div>
-                  </label>
+                  {["borrower", "lender"].map((role) => (
+                    <label
+                      htmlFor={role}
+                      className="block cursor-pointer h-full"
+                      key={role}
+                    >
+                      <input
+                        type="radio"
+                        id={role}
+                        name="type"
+                        value={role}
+                        checked={field.value === role}
+                        className="peer hidden"
+                        onChange={() => field.onChange(role)}
+                      />
+                      <div className="flex-col border-2 peer-checked:bg-secondary peer-checked:border-primary rounded-md flex items-center justify-center p-5 gap-5 peer-checked:text-white h-full w-50 ">
+                        <Image
+                          src={
+                            role === "borrower" ? images.Borrow : images.Lend
+                          }
+                          alt={`${role} money`}
+                          height={32}
+                          width={100}
+                        />
 
-                  <label htmlFor="lender" className="block ">
-                    <input
-                      type="radio"
-                      id="lender"
-                      name="type"
-                      value="lender"
-                      checked={field.value === "lender"}
-                      className="peer hidden"
-                      onChange={() => {
-                        field.onChange("lender");
-                        setMember("Borrower");
-                      }} // 👈 Borrower selected => member = Lender
-                    />
-                    <div className="h-[50px] border bg-amber-200 peer-checked:border-primary rounded-md flex items-center justify-center">
-                      Lend
-                    </div>
-                  </label>
+                        <div className="flex items-center flex-col gap-2">
+                          <h5 className="font-medium text-lg">
+                            {role === "borrower" ? "Borrow" : "Lend"}
+                          </h5>
+
+                          <p className="  text-center text-sm">
+                            {role === "borrower"
+                              ? "You borrowed money from someone. Track what you need to pay."
+                              : "You lent money to someone. Track what they owe you."}
+                          </p>
+                        </div>
+                      </div>
+                    </label>
+                  ))}
                 </div>
               </FormItem>
             )}
@@ -123,11 +103,11 @@ export default function InputForm() {
                     className="placeholder:text-sm"
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="amount"
@@ -139,11 +119,11 @@ export default function InputForm() {
                     type="number"
                     inputMode="numeric"
                     placeholder="Enter amount..."
-                    className="placeholder:text-sm"
                     {...field}
+                    className="placeholder:text-sm !focus:border-[var(--primary)]
+                    "
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -151,19 +131,18 @@ export default function InputForm() {
 
           <FormField
             control={form.control}
-            name="username"
+            name="shareTo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{member} email</FormLabel>
+                <FormLabel>Share with (optional)</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
                     placeholder="Enter email..."
-                    className="placeholder:text-sm"
                     {...field}
+                    className="placeholder:text-sm"
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -174,21 +153,22 @@ export default function InputForm() {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description(optional)</FormLabel>
+                <FormLabel>Description (optional)</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Type your description..."
-                    className="placeholder:text-sm"
                     {...field}
+                    className="placeholder:text-sm"
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="w-full p-5">
+            Submit
+          </Button>
         </form>
       </Form>
     </div>

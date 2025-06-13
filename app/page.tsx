@@ -1,10 +1,13 @@
-
-import React from 'react'
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+  const route = useRouter();
 
-export default page
+  useEffect(() => {
+    route.push("/addActivity");
+  }, []);
+  return <div>Redirecting...</div>;
+};
+
+export default page;
