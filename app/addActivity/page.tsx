@@ -40,7 +40,7 @@ export default function InputForm() {
       <div className="border-b-1  relative p-5">
         <button
           className="absolute left-5 top-3.5 h-[40px] w-[40px] cursor-pointer"
-          onClick={() => router.push("/")}
+          onClick={() => router.back()}
         >
           <BiChevronLeft size={28} />
         </button>

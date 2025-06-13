@@ -6,7 +6,7 @@ const page = () => {
   const route = useRouter();
 
   useEffect(() => {
-    route.push("/addActivity");
+    route.push("/dashboard");
   }, []);
   return <div>Redirecting...</div>;
 };
