@@ -48,20 +48,28 @@ const TransactionCard = ({
           Due on <span className="text-primary font-medium">{dueDate}</span>
         </h5>
       </div>
-      <h5 className="font-semibold text-[24px]">₱{amount.toLocaleString()}</h5>
+      <h5 className="font-semibold text-[24px]">
+        ₱
+        {amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </h5>
     </div>
 
     <div className="bg-[var(--grey-bg)] p-2 rounded-lg my-3 min-h-[40px]">
       <p className="text-nowrap text-[12px] text-muted-foreground">{note}</p>
     </div>
 
-    <div className="w-full flex items-center justify-center gap-3 border-t py-3">
-      <Button className={`w-50 border-1 ${buttonColor} rounded-full p-5`}>
-        Received
-      </Button>
-      <Button className="w-50 border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-5">
+    <div className="w- flex items-center justify-between gap-3 border-t py-3">
+      <button
+        className={` border-1 ${buttonColor} rounded-full p-3 flex w-[50%] items-center justify-center text-white font-medium uppercase tracking-wide`}
+      >
+        {type === "To Pay" ? "Paid" : "Received"}
+      </button>
+      <button className=" border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-3 flex w-[50%] items-center justify-center  font-medium uppercase tracking-wide">
         Detail
-      </Button>
+      </button>
     </div>
 
     <div className="flex flex-row-reverse items-center justify-start gap-1 pt-2 border-t">
@@ -119,12 +127,14 @@ export default function Dashboard() {
               Money you're getting back
             </h5>
             <h3 className="text-white text-xl font-semibold text-end">
-              ₱ {lendmoney}
+              ₱ {lendmoney}.00
             </h3>
           </div>
           <div className="flex flex-col justify-between p-3 rounded-lg border-2 border-secondary h-[124px]">
             <h5 className="text-[16px] font-semibold">Money you owe</h5>
-            <h3 className="text-xl font-bold mt-5 text-end">₱ {owedmoney}</h3>
+            <h3 className="text-xl font-bold mt-5 text-end">
+              ₱ {owedmoney}.00
+            </h3>
           </div>
           <div className="col-span-2 flex flex-col justify-between bg-[var(--primary-100)] border-2 border-[var(--primary)] p-3 rounded-lg">
             <h5 className="text-[16px] font-semibold">Next transaction due</h5>
@@ -147,26 +157,87 @@ export default function Dashboard() {
               type="To Receive"
               title="Phone Loan"
               dueDate="Mon, 2 JUN 2025"
-              amount={4000}
+              amount={4000.0}
               note="Notes kase wala lang trip ko lang"
-              badgeColor="bg-primary"
-              buttonColor="bg-primary border-primary"
+              badgeColor="bg-[var(--green)]"
+              buttonColor="bg-[var(--green)] border-[var(--green)] hover:bg-[var(--green-300)]"
             />
             <TransactionCard
               type="To Pay"
               title="Phone Loan"
               dueDate="Mon, 2 JUN 2025"
-              amount={4000}
+              amount={4000.0}
               note="Notes kase wala lang trip ko lang"
-              badgeColor="bg-[var(--green)]"
-              buttonColor="bg-[var(--green)] border-[var(--green)] hover:bg-[var(--green-300)]"
+              badgeColor="bg-primary"
+              buttonColor=" bg-primary border-primary"
             />
+
+            <div className="card rounded-lg border-2 border-secondary p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <span
+                    className={`h-[14px] w-[14px] rounded-full bg-primary`}
+                  ></span>
+                  <p>To Pay</p>
+                </div>
+                <div className="flex -space-x-2">
+                  {sharedUsers.slice(0, 3).map((user, i) => (
+                    <div
+                      key={i}
+                      className="relative h-7 w-7 rounded-full overflow-hidden border-2 border-white dark:border-background"
+                    >
+                      <Image
+                        src={user.avatar}
+                        alt={user.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                  {sharedUsers.length > 3 && (
+                    <div className="h-7 w-7 rounded-full bg-[var(--primary-100)] text-[10px] flex items-center justify-center text-muted-foreground border-2 border-white font-semibold">
+                      +{sharedUsers.length - 3}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-between items-end my-5">
+                <div className="flex flex-col">
+                  <p className="text-[16px] font-medium">Sample Title</p>
+                  <h5>
+                    Due on{" "}
+                    <span className="text-primary font-medium">
+                      Tue, JUN 22 2025
+                    </span>
+                  </h5>
+                </div>
+                <h5 className="font-semibold text-[24px]">₱2,500.00</h5>
+              </div>
+
+              <div className="bg-[var(--grey-bg)] p-2 rounded-lg my-3 min-h-[40px]">
+                <p className="text-nowrap text-[12px] text-muted-foreground">
+                  notesnotes lang kase sample lang to.
+                </p>
+              </div>
+
+              <div className="w- flex items-center justify-between gap-3 border-t py-3">
+                <button
+                  className={` border-1 bg-primary rounded-full p-3 flex w-[50%] items-center justify-center text-white font-medium uppercase tracking-wide`}
+                >
+                  Paid
+                </button>
+                <button className=" border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-3 flex w-[50%] items-center justify-center  font-medium uppercase tracking-wide">
+                  Detail
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Add New Button */}
         <Button
-          className="bg-primary p-5 cursor-pointer mt-5 w-full"
+          className="bg-primary h-[47px] cursor-pointer mt-5 w-full mb-10 rounded-full"
           onClick={() => router.push("/addActivity")}
         >
           <BiPlus size={24} />
