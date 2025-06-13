@@ -10,7 +10,7 @@
   --primary-100: #e8e0fa;
   --primary-200: #b3a2f1;
   --green: #0fb47d;
-  --green-300:#189e71;
+  --green-300: #189e71;
   --grey-bg: #e2e8f0;
   --gray-60: #333/50;
   --radius: 0.625rem;
@@ -87,6 +87,11 @@
 }
 
 body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
   font-family: var(--font-sans);
   color: #333333;
   box-sizing: border-box;
