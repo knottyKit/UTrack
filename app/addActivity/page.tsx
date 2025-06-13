@@ -17,9 +17,12 @@ import Image from "next/image";
 import { images } from "@/constants/images";
 import "./index.css";
 import { FormSchemaType, useInputForm } from "./addActivity.hooks";
+import { BiChevronLeft } from "react-icons/bi";
+import { useRouter } from "next/navigation";
 
 export default function InputForm() {
   const form = useInputForm();
+  const router = useRouter();
 
   function onSubmit(data: FormSchemaType) {
     console.log("Submitted Data:", data);
@@ -33,11 +36,21 @@ export default function InputForm() {
   }
 
   return (
-    <div className="p-5">
+    <>
+      <div className="border-b-1  relative p-5">
+        <button
+          className="absolute left-5 top-3.5 h-[40px] w-[40px] cursor-pointer"
+          onClick={() => router.push("/")}
+        >
+          <BiChevronLeft size={28} />
+        </button>
+        <h5 className="text-lg font-medium text-center">Add New Transaction</h5>
+      </div>
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
+          className="w-full space-y-6 p-5"
         >
           <FormField
             control={form.control}
@@ -45,7 +58,7 @@ export default function InputForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>What are you tracking?</FormLabel>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-2 gap-3 mt-2">
                   {["borrower", "lender"].map((role) => (
                     <label
                       htmlFor={role}
@@ -61,7 +74,7 @@ export default function InputForm() {
                         className="peer hidden"
                         onChange={() => field.onChange(role)}
                       />
-                      <div className="flex-col border-2 peer-checked:bg-secondary peer-checked:border-primary rounded-md flex items-center justify-center p-5 gap-5 peer-checked:text-white h-full w-50 ">
+                      <div className="flex-col border-2 peer-checked:bg-secondary peer-checked:border-primary rounded-md flex items-center justify-center p-5 gap-5 peer-checked:text-white h-full w-full">
                         <Image
                           src={
                             role === "borrower" ? images.Borrow : images.Lend
@@ -76,7 +89,7 @@ export default function InputForm() {
                             {role === "borrower" ? "Borrow" : "Lend"}
                           </h5>
 
-                          <p className="  text-center text-sm">
+                          <p className=" text-pretty text-center text-sm">
                             {role === "borrower"
                               ? "You borrowed money from someone. Track what you need to pay."
                               : "You lent money to someone. Track what they owe you."}
@@ -166,11 +179,11 @@ export default function InputForm() {
             )}
           />
 
-          <Button type="submit" className="w-full p-5">
+          <Button type="submit" className="w-full h-[42px]">
             Submit
           </Button>
         </form>
       </Form>
-    </div>
+    </>
   );
 }
