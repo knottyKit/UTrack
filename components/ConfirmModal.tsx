@@ -36,19 +36,16 @@ export default function ConfirmModal({
     <Dialog
       open={open}
       onClose={onClose}
-      className="fixed z-50 inset-0 overflow-y-auto"
+      className="fixed z-10 inset-0 overflow-y-auto"
     >
-      <div className="flex items-end justify-center min-h-screen px-4 pb-20 text-center sm:block sm:p-0">
+      <div className="flex items-end justify-center min-h-screen px-4   text-center sm:block sm:p-0">
         {/* Background overlay */}
-        <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
+        <DialogBackdrop className="fixed inset-0 bg-black opacity-30 dark:opacity-60 -z-20" />
 
         {/* Modal Panel */}
-        <DialogPanel className="inline-block align-bottom bg-white rounded-t-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full p-6">
+        <DialogPanel className="inline-block align-bottom bg-white dark:bg-popover pb-20 rounded-t-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full p-6 z-20">
           <div className="flex justify-between items-center mb-4">
-            <DialogTitle
-              as="h3"
-              className="text-lg font-semibold leading-6 text-gray-900"
-            >
+            <DialogTitle as="h3" className="text-lg font-semibold leading-6">
               Confirm {actionLabel}
             </DialogTitle>
             <button onClick={onClose}>
@@ -74,14 +71,14 @@ export default function ConfirmModal({
 
           <div className="mt-6 flex gap-3">
             <Button
-              className="bg-muted rounded-full text-foreground hover:bg-gray-200 w-50"
+              className="bg-muted rounded-full cursor-pointer text-foreground hover:bg-gray-200 w-50 p-5"
               variant="outline"
               onClick={onClose}
             >
               Cancel
             </Button>
             <Button
-              className="bg-primary rounded-full text-white w-50"
+              className="bg-primary p-5 cursor-pointer rounded-full text-white w-50"
               onClick={handleSubmit}
             >
               Confirm {actionLabel}
