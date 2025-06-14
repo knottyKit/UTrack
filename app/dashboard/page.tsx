@@ -253,7 +253,7 @@ export default function Dashboard() {
 
         {/* Add New Button */}
         <Button
-          className="bg-primary h-[47px] cursor-pointer mt-5 w-full mb-10 rounded-full dark:text-white"
+          className="bg-primary h-[47px] cursor-pointer mt-5 w-full mb-20 rounded-full dark:text-white"
           onClick={() => router.push("/addActivity")}
         >
           <BiPlus size={24} />
