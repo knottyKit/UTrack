@@ -1,10 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BiBell, BiDotsVerticalRounded, BiPlus } from "react-icons/bi";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { images } from "@/constants/images";
+import ConfirmModal from "@/components/ConfirmModal";
 
 const sharedUsers = [
   { name: "Wathuffen Vella", avatar: images.user1 },
@@ -21,6 +22,7 @@ const TransactionCard = ({
   note,
   badgeColor,
   buttonColor,
+  onActionClick,
 }: {
   type: "To Pay" | "To Receive";
   title: string;
@@ -29,8 +31,9 @@ const TransactionCard = ({
   note: string;
   badgeColor: string;
   buttonColor: string;
+  onActionClick: () => void;
 }) => (
-  <div className="card rounded-lg border-2 border-secondary p-3">
+  <div className="card rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card p-3">
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-1">
         <span className={`h-[14px] w-[14px] rounded-full ${badgeColor}`}></span>
@@ -57,17 +60,18 @@ const TransactionCard = ({
       </h5>
     </div>
 
-    <div className="bg-[var(--grey-bg)] p-2 rounded-lg my-3 min-h-[40px]">
-      <p className="text-nowrap text-[12px] text-muted-foreground">{note}</p>
+    <div className="bg-[var(--grey-bg)] dark:bg-input p-2 rounded-sm my-3 min-h-[40px]">
+      <p className="text-nowrap text-[12px] text-muted-">{note}</p>
     </div>
 
     <div className="w- flex items-center justify-between gap-3 border-t py-3">
       <button
-        className={` border-1 ${buttonColor} rounded-full p-3 flex w-[50%] items-center justify-center text-white font-medium uppercase tracking-wide`}
+        className={` border-1 ${buttonColor} rounded-full p-3 flex w-[50%] items-center justify-center text-white font-medium uppercase tracking-wide cursor-pointer`}
+        onClick={onActionClick}
       >
         {type === "To Pay" ? "Paid" : "Received"}
       </button>
-      <button className=" border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-3 flex w-[50%] items-center justify-center  font-medium uppercase tracking-wide">
+      <button className=" border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-3 flex w-[50%] items-center justify-center  font-medium uppercase tracking-wide cursor-pointer">
         Detail
       </button>
     </div>
@@ -106,6 +110,14 @@ export default function Dashboard() {
   const lendmoney = 26350.0;
   const owedmoney = 5000.0;
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [actionType, setActionType] = useState<"Paid" | "Received">("Paid");
+
+  const handleAction = (type: "Paid" | "Received") => {
+    setActionType(type);
+    setModalOpen(true);
+  };
+
   return (
     <div className="overflow-y-auto">
       {/* Header */}
@@ -122,23 +134,25 @@ export default function Dashboard() {
       {/* Summary Cards */}
       <div className="p-5">
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col justify-between p-3 rounded-lg border-2 bg-secondary border-secondary h-[124px]">
-            <h5 className="text-[16px] text-muted font-medium">
+          <div className="flex flex-col justify-between p-3 rounded-lg border-2 bg-secondary border-secondary dark:bg-secondary/70 dark:border-secondary/80 h-[124px]">
+            <h5 className="text-[16px] text-muted font-semibold">
               Money you're getting back
             </h5>
-            <h3 className="text-white text-xl font-semibold text-end">
+            <h3 className="text-muted text-xl font-semibold text-end">
               ₱ {lendmoney}.00
             </h3>
           </div>
-          <div className="flex flex-col justify-between p-3 rounded-lg border-2 border-secondary h-[124px]">
+          <div className="flex flex-col justify-between p-3 rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card h-[124px]">
             <h5 className="text-[16px] font-semibold">Money you owe</h5>
             <h3 className="text-xl font-bold mt-5 text-end">
               ₱ {owedmoney}.00
             </h3>
           </div>
           <div className="col-span-2 flex flex-col justify-between bg-[var(--primary-100)] border-2 border-[var(--primary)] p-3 rounded-lg">
-            <h5 className="text-[16px] font-semibold">Next transaction due</h5>
-            <h3 className="mt-5">
+            <h5 className="text-[16px] font-semibold text-[#333]">
+              Next transaction due
+            </h5>
+            <h3 className="mt-5 text-[#333]">
               Upcoming payment: ₱{owedmoney} due on May 10, 2025.
             </h3>
           </div>
@@ -160,6 +174,7 @@ export default function Dashboard() {
               amount={4000.0}
               note="Notes kase wala lang trip ko lang"
               badgeColor="bg-[var(--green)]"
+              onActionClick={() => handleAction("Received")}
               buttonColor="bg-[var(--green)] border-[var(--green)] hover:bg-[var(--green-300)]"
             />
             <TransactionCard
@@ -169,10 +184,11 @@ export default function Dashboard() {
               amount={4000.0}
               note="Notes kase wala lang trip ko lang"
               badgeColor="bg-primary"
+              onActionClick={() => handleAction("Paid")}
               buttonColor=" bg-primary border-primary"
             />
 
-            <div className="card rounded-lg border-2 border-secondary p-3">
+            <div className="card rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <span
@@ -215,8 +231,8 @@ export default function Dashboard() {
                 <h5 className="font-semibold text-[24px]">₱2,500.00</h5>
               </div>
 
-              <div className="bg-[var(--grey-bg)] p-2 rounded-lg my-3 min-h-[40px]">
-                <p className="text-nowrap text-[12px] text-muted-foreground">
+              <div className="bg-[var(--grey-bg)] dark:bg-input p-2 rounded-sm my-3 min-h-[40px]">
+                <p className="text-nowrap text-[12px] text-muted-foreground dark:text-foreground">
                   notesnotes lang kase sample lang to.
                 </p>
               </div>
@@ -237,13 +253,23 @@ export default function Dashboard() {
 
         {/* Add New Button */}
         <Button
-          className="bg-primary h-[47px] cursor-pointer mt-5 w-full mb-10 rounded-full"
+          className="bg-primary h-[47px] cursor-pointer mt-5 w-full mb-10 rounded-full dark:text-white"
           onClick={() => router.push("/addActivity")}
         >
           <BiPlus size={24} />
           Add new Item
         </Button>
       </div>
+
+      <ConfirmModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        actionLabel={actionType}
+        onConfirm={(desc, file) => {
+          console.log("Confirmed", actionType, desc, file);
+          // Handle your logic here (e.g. API call)
+        }}
+      />
     </div>
   );
 }

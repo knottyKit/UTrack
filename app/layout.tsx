@@ -4,10 +4,11 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
+import ConditionalBottomNav from "@/components/ConditionalBottomNav";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // add weights you need
+  weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
   display: "swap",
 });
@@ -23,9 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${poppins.variable}  antialiased`}>
-      <body className="w-full overflow-auto h-screen">
-        {children} <Analytics /> <Toaster />
+    <html lang="en" className={`${poppins.variable} antialiased dark`}>
+      <body className="w-full overflow-auto h-screen pb-16">
+        {children}
+        <ConditionalBottomNav />
+        <Analytics />
+        <Toaster />
       </body>
     </html>
   );
