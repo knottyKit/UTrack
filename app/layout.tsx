@@ -1,10 +1,12 @@
+// app/layout.tsx
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
 import ConditionalBottomNav from "@/components/ConditionalBottomNav";
+import { ThemeProvider } from "next-themes";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -20,16 +22,22 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className={`${poppins.variable} antialiased dark`}>
+    <html
+      lang="en"
+      className={`${poppins.variable} antialiased`}
+      suppressHydrationWarning
+    >
       <body className="w-full overflow-auto h-screen pb-16">
-        {children}
-        <ConditionalBottomNav />
-        <Analytics />
-        <Toaster />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+          <ConditionalBottomNav />
+          <Analytics />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
