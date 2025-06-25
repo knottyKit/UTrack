@@ -6,6 +6,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { images } from "@/constants/images";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useAuth } from "@/hooks/auth.hooks";
+import { useUserData } from "@/hooks/user.hooks";
 
 const sharedUsers = [
   { name: "Wathuffen Vella", avatar: images.user1 },
@@ -106,7 +108,9 @@ const TransactionCard = ({
 
 export default function Dashboard() {
   const router = useRouter();
-  const user = "Collene";
+  const { user } = useAuth();
+  const { userData } = useUserData(user?.uid);
+  console.log(userData)
   const lendmoney = 26350.0;
   const owedmoney = 5000.0;
 
@@ -123,7 +127,7 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex w-full items-center justify-between p-5">
         <div>
-          <h1 className="text-[24px] font-bold">Hi {user},</h1>
+          <h1 className="text-[24px] font-bold">{userData ? `Hi ${userData.firstName},` : "Loading..."}</h1>
           <p>Here's how your money looks today!</p>
         </div>
         <div className="flex items-center justify-center rounded-full bg-primary h-[40px] w-[40px]">
