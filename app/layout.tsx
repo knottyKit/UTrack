@@ -16,7 +16,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "UTrack",
+  title: "Taguru",
   description: "Track your Utang",
 };
 
