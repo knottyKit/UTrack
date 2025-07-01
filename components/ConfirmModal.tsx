@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Paperclip, X } from "lucide-react";
 
 interface ConfirmModalProps {
+  amount: number;
+  label: string;
   open: boolean;
   onClose: () => void;
   onConfirm: (description: string, file?: File) => void;
@@ -17,20 +19,20 @@ interface ConfirmModalProps {
 }
 
 export default function ConfirmModal({
+  amount,
+  label,
   open,
   onClose,
   onConfirm,
   actionLabel,
 }: ConfirmModalProps) {
   const [description, setDescription] = React.useState("");
-  const [file, setFile] = React.useState<File | null>(null);
-  const [notes, setNotes] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
 
   const handleSubmit = () => {
-    onConfirm(description, file || undefined);
+    onConfirm(description, attachment || undefined);
     setDescription("");
-    setFile(null);
+    setAttachment(null);
     onClose();
   };
 
@@ -38,10 +40,6 @@ export default function ConfirmModal({
     const file = e.target.files?.[0] || null;
     setAttachment(file);
   };
-
-  const handleClose = () =>{
-    
-  }
 
   return (
     <Dialog
@@ -64,7 +62,7 @@ export default function ConfirmModal({
             </button>
           </div>
           <p className="mb-4">
-            Add optional notes and attachments before confirming the payment.
+            Confirm payment of {amount} for {label}
           </p>
 
           <div className="space-y-4">
@@ -100,19 +98,33 @@ export default function ConfirmModal({
                 <Paperclip className=" h-5 w-5" />
                 Choose file
               </Button>
+              {attachment && (
+                <div className="mt-2 flex items-center justify-between bg-muted rounded p-3 gap-2">
+                  {attachment.type.startsWith("image/") && (
+                    <img
+                      src={URL.createObjectURL(attachment)}
+                      alt="Preview"
+                      className=" h-12 w-12 rounded-lg object-contain border"
+                    />
+                  )}
+                  <p className="text-sm text-gray-600 truncate flex-1">
+                    {attachment.name}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setAttachment(null)}
+                    className="flex items-center justify-center cursor-pointer h-10 w-10 flex-shrink-0 text-gray-400"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
           <div className="mt-6 flex w-full gap-3 justify-between">
             <Button
-              className=" flex flex-1 bg-muted rounded-full cursor-pointer text-foreground hover:bg-gray-200  p-5"
-              variant="outline"
-              onClick={onClose}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="flex flex-1 bg-primary p-5 cursor-pointer rounded-full  text-white "
+              className="flex flex-1 bg-primary p-5 cursor-pointer rounded-full h-[47px] text-white "
               onClick={handleSubmit}
             >
               Confirm {actionLabel}

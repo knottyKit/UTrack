@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,8 +16,8 @@ import Image from "next/image";
 import { images } from "@/constants/images";
 import "./index.css";
 import { FormSchemaType, useInputForm } from "./addActivity.hooks";
-import { BiChevronLeft } from "react-icons/bi";
 import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 
 export default function InputForm() {
   const form = useInputForm();
@@ -42,7 +41,7 @@ export default function InputForm() {
           className="absolute left-5 top-3.5 h-[40px] w-[40px] cursor-pointer"
           onClick={() => router.back()}
         >
-          <BiChevronLeft size={28} />
+          <ChevronLeft  size={28} />
         </button>
         <h5 className="text-lg font-medium text-center">Add New Transaction</h5>
       </div>
@@ -179,7 +178,7 @@ export default function InputForm() {
             )}
           />
 
-          <Button type="submit" className="w-full h-[42px]">
+          <Button type="submit" className="w-full h-[47px] rounded-full">
             Submit
           </Button>
         </form>

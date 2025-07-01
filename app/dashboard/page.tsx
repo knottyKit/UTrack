@@ -15,6 +15,7 @@ const sharedUsers = [
 ];
 
 const TransactionCard = ({
+  id,
   type,
   title,
   dueDate,
@@ -23,7 +24,9 @@ const TransactionCard = ({
   badgeColor,
   buttonColor,
   onActionClick,
+  onDetailClick,
 }: {
+  id: number;
   type: "To Pay" | "To Receive";
   title: string;
   dueDate: string;
@@ -31,7 +34,8 @@ const TransactionCard = ({
   note: string;
   badgeColor: string;
   buttonColor: string;
-  onActionClick: () => void;
+  onActionClick: (amount: number, title: string) => void;
+  onDetailClick: (id: number) => void;
 }) => (
   <div className="card rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card p-3">
     <div className="flex items-center justify-between">
@@ -66,14 +70,17 @@ const TransactionCard = ({
 
     <div className="w- flex items-center justify-between gap-3 border-t py-3">
       <button
-        className={` border-1 ${buttonColor} rounded-full p-3 flex w-[50%] items-center justify-center text-white font-medium uppercase tracking-wide cursor-pointer`}
-        onClick={onActionClick}
+        className={` border-1 ${buttonColor} rounded-full p-3 flex w-full items-center justify-center text-white font-medium uppercase tracking-wide cursor-pointer`}
+        onClick={() => onActionClick(amount, title)}
       >
         {type === "To Pay" ? "Paid" : "Received"}
       </button>
-      <button className=" border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-3 flex w-[50%] items-center justify-center  font-medium uppercase tracking-wide cursor-pointer">
+      {/* <button
+        className=" border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-3 flex w-[50%] items-center justify-center  font-medium uppercase tracking-wide cursor-pointer"
+        onClick={() => onDetailClick(id)}
+      >
         Detail
-      </button>
+      </button> */}
     </div>
 
     <div className="flex flex-row-reverse items-center justify-start gap-1 pt-2 border-t">
@@ -112,6 +119,8 @@ export default function Dashboard() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"Paid" | "Received">("Paid");
+  const [modalLabel, setModalLabel] = useState("");
+  const [modalAmount, setModalAmount] = useState(0);
 
   const handleAction = (type: "Paid" | "Received") => {
     setActionType(type);
@@ -168,26 +177,42 @@ export default function Dashboard() {
 
           <div className="mt-5 flex flex-col gap-3">
             <TransactionCard
+              id={1}
               type="To Receive"
-              title="Phone Loan"
+              title={"Phone Loan"}
               dueDate="Mon, 2 JUN 2025"
               amount={4000.0}
               note="Notes kase wala lang trip ko lang"
               badgeColor="bg-[var(--green)]"
-              onActionClick={() => handleAction("Received")}
+              onActionClick={(amount, title) => {
+                handleAction("Received");
+                setModalLabel(title);
+                setModalAmount(amount);
+              }}
+              onDetailClick={(id) => {
+                router.push(`/details/${id}`);
+              }}
               buttonColor="bg-[var(--green)] border-[var(--green)] hover:bg-[var(--green-300)]"
             />
             <TransactionCard
+              id={2}
               type="To Pay"
               title="Phone Loan"
               dueDate="Mon, 2 JUN 2025"
               amount={4000.0}
               note="Notes kase wala lang trip ko lang"
               badgeColor="bg-primary"
-              onActionClick={() => handleAction("Paid")}
+              onActionClick={(amount, title) => {
+                handleAction("Paid");
+                setModalLabel(title);
+                setModalAmount(amount);
+              }}
+              onDetailClick={(id) => {
+                router.push(`/details/${id}`);
+              }}
               buttonColor=" bg-primary border-primary"
             />
-
+            {/* 
             <div className="card rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
@@ -247,7 +272,7 @@ export default function Dashboard() {
                   Detail
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -262,6 +287,8 @@ export default function Dashboard() {
       </div>
 
       <ConfirmModal
+        label={modalLabel}
+        amount={modalAmount}
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         actionLabel={actionType}
