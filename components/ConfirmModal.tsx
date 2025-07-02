@@ -63,8 +63,8 @@ export default function ConfirmModal({
             />
 
             <input
-              type="file"
-              accept="image/*"
+               type="file"
+                accept="image/*"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
           </div>
