@@ -200,7 +200,7 @@ export default function Dashboard() {
               confirmations.map((item) => (
                 <div
                   key={item.id}
-                  className="border rounded-lg p-4 flex flex-col gap-2 shadow-sm"
+                  className="border rounded-lg p-4 flex flex-col gap-2 shadow-sm bg-muted"
                 >
                   <div className="flex justify-between items-center">
                     <span className="font-medium">{item.label}</span>
@@ -210,7 +210,7 @@ export default function Dashboard() {
                     ₱{item.amount.toLocaleString()}
                   </p>
                   <p className="text-sm text-gray-500">From: {item.user}</p>
-                  <button
+                  <button       
                     onClick={() => {
                       setActionType(
                         item.type === "To Pay" ? "Paid" : "Received"
@@ -219,7 +219,7 @@ export default function Dashboard() {
                       setModalAmount(item.amount);
                       setModalOpen(true);
                     }}
-                    className="w-full bg-green-500 text-white rounded py-2 text-sm font-medium mt-2"
+                    className="w-full uppercase h-[47px] bg-orange-500 text-white rounded-full py-2 text-sm font-medium mt-2"
                   >
                     Confirm
                   </button>

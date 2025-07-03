@@ -27,7 +27,7 @@ export default function BottomNav() {
             <p className="text-[12px]">Home</p>
           </div>
         </a>
-        <a
+        {/* <a
           href="/search"
           className={isActive("/search") ? "text-primary" : "text-neutral-500"}
         >
@@ -36,7 +36,7 @@ export default function BottomNav() {
             <Search strokeWidth={isActive("/search") ? 2.5 : 1.5} />
             <p className="text-[12px]">Search</p>
           </div>
-        </a>
+        </a> */}
         <a
           href="/transactions"
           className={
