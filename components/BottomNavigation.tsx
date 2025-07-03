@@ -1,6 +1,11 @@
 "use client";
 
-import { ArrowLeftRight, LayoutDashboard, Search } from "lucide-react";
+import {
+  ArrowLeftRight,
+  LayoutDashboard,
+  Search,
+  Settings,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function BottomNav() {
@@ -43,6 +48,18 @@ export default function BottomNav() {
               strokeWidth={isActive("/transactions") ? 2.5 : 1.5}
             />
             <p className="text-[12px]">Transactions</p>
+          </div>
+        </a>
+
+        <a
+          href="/settings"
+          className={
+            isActive("/settings") ? "text-primary" : "text-neutral-500"
+          }
+        >
+          <div className="flex flex-col items-center justify-center ">
+            <Settings strokeWidth={isActive("/settings") ? 2.5 : 1.5} />
+            <p className="text-[12px]">Settings</p>
           </div>
         </a>
       </div>

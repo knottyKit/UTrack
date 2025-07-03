@@ -8,8 +8,8 @@ export default function ConditionalBottomNav() {
   const showBottomNav = [
     "/dashboard",
     "/search",
-    "/profile",
     "/transactions",
+    "/settings",
   ].includes(pathname);
 
   return showBottomNav ? <BottomNav /> : null;

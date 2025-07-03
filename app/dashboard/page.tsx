@@ -127,6 +127,23 @@ export default function Dashboard() {
     setModalOpen(true);
   };
 
+  const confirmations = [
+    {
+      id: 1,
+      label: "Phone Loan",
+      amount: 4000,
+      type: "To Receive",
+      user: "John Smith",
+    },
+    {
+      id: 2,
+      label: "Dinner Payment",
+      amount: 1500,
+      type: "To Pay",
+      user: "Jane Doe",
+    },
+  ];
+
   return (
     <div className="overflow-y-auto">
       {/* Header */}
@@ -164,6 +181,51 @@ export default function Dashboard() {
             <h3 className="mt-5 text-[#333]">
               Upcoming payment: ₱{owedmoney} due on May 10, 2025.
             </h3>
+          </div>
+        </div>
+
+        {/* Confirmations Section */}
+        <div className="mt-10">
+          <h3 className="text-lg font-semibold">Confirmations needed</h3>
+          <p className="text-muted-foreground">
+            Approve pending transactions from other users.
+          </p>
+
+          <div className="mt-5 flex flex-col gap-3">
+            {confirmations.length === 0 ? (
+              <p className="text-center text-gray-500">
+                No confirmations at this time.
+              </p>
+            ) : (
+              confirmations.map((item) => (
+                <div
+                  key={item.id}
+                  className="border rounded-lg p-4 flex flex-col gap-2 shadow-sm"
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">{item.label}</span>
+                    <span className="text-gray-500 text-sm">{item.type}</span>
+                  </div>
+                  <p className="text-lg font-bold">
+                    ₱{item.amount.toLocaleString()}
+                  </p>
+                  <p className="text-sm text-gray-500">From: {item.user}</p>
+                  <button
+                    onClick={() => {
+                      setActionType(
+                        item.type === "To Pay" ? "Paid" : "Received"
+                      );
+                      setModalLabel(item.label);
+                      setModalAmount(item.amount);
+                      setModalOpen(true);
+                    }}
+                    className="w-full bg-green-500 text-white rounded py-2 text-sm font-medium mt-2"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -212,67 +274,6 @@ export default function Dashboard() {
               }}
               buttonColor=" bg-primary border-primary"
             />
-            {/* 
-            <div className="card rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <span
-                    className={`h-[14px] w-[14px] rounded-full bg-primary`}
-                  ></span>
-                  <p>To Pay</p>
-                </div>
-                <div className="flex -space-x-2">
-                  {sharedUsers.slice(0, 3).map((user, i) => (
-                    <div
-                      key={i}
-                      className="relative h-7 w-7 rounded-full overflow-hidden border-2 border-white dark:border-background"
-                    >
-                      <Image
-                        src={user.avatar}
-                        alt={user.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                  {sharedUsers.length > 3 && (
-                    <div className="h-7 w-7 rounded-full bg-[var(--primary-100)] text-[10px] flex items-center justify-center text-muted-foreground border-2 border-white font-semibold">
-                      +{sharedUsers.length - 3}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex justify-between items-end my-5">
-                <div className="flex flex-col">
-                  <p className="text-[16px] font-medium">Sample Title</p>
-                  <h5>
-                    Due on{" "}
-                    <span className="text-primary font-medium">
-                      Tue, JUN 22 2025
-                    </span>
-                  </h5>
-                </div>
-                <h5 className="font-semibold text-[24px]">₱2,500.00</h5>
-              </div>
-
-              <div className="bg-[var(--grey-bg)] dark:bg-input p-2 rounded-sm my-3 min-h-[40px]">
-                <p className="text-nowrap text-[12px] text-muted-foreground dark:text-foreground">
-                  notesnotes lang kase sample lang to.
-                </p>
-              </div>
-
-              <div className="w- flex items-center justify-between gap-3 border-t py-3">
-                <button
-                  className={` border-1 bg-primary rounded-full p-3 flex w-[50%] items-center justify-center text-white font-medium uppercase tracking-wide`}
-                >
-                  Paid
-                </button>
-                <button className=" border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-3 flex w-[50%] items-center justify-center  font-medium uppercase tracking-wide">
-                  Detail
-                </button>
-              </div>
-            </div> */}
           </div>
         </div>
 
