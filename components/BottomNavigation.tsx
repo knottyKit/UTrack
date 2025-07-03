@@ -33,11 +33,15 @@ export default function BottomNav() {
           </div>
         </a>
         <a
-          href="/profile"
-          className={isActive("/profile") ? "text-primary" : "text-neutral-500"}
+          href="/transactions"
+          className={
+            isActive("/transactions") ? "text-primary" : "text-neutral-500"
+          }
         >
           <div className="flex flex-col items-center justify-center ">
-            <ArrowLeftRight strokeWidth={isActive("/profile") ? 2.5 : 1.5} />
+            <ArrowLeftRight
+              strokeWidth={isActive("/transactions") ? 2.5 : 1.5}
+            />
             <p className="text-[12px]">Transactions</p>
           </div>
         </a>

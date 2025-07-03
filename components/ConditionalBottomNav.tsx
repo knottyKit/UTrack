@@ -5,9 +5,12 @@ import BottomNav from "./BottomNavigation";
 
 export default function ConditionalBottomNav() {
   const pathname = usePathname();
-  const showBottomNav = ["/dashboard", "/search", "/profile"].includes(
-    pathname
-  );
+  const showBottomNav = [
+    "/dashboard",
+    "/search",
+    "/profile",
+    "/transactions",
+  ].includes(pathname);
 
   return showBottomNav ? <BottomNav /> : null;
 }
