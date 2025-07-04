@@ -6,6 +6,9 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { images } from "@/constants/images";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useAuth } from "@/hooks/auth.hooks";
+import { useUserData } from "@/hooks/user.hooks";
+import { useDashboardData } from "./dashboard.hooks";
 
 const sharedUsers = [
   { name: "Wathuffen Vella", avatar: images.user1 },
@@ -113,9 +116,14 @@ const TransactionCard = ({
 
 export default function Dashboard() {
   const router = useRouter();
-  const user = "Collene";
-  const lendmoney = 26350.0;
-  const owedmoney = 5000.0;
+  const { user } = useAuth();
+  const { userData } = useUserData(user?.uid);
+  const {
+    totalOwed,
+    totalReceive,
+    nextTransact,
+    loading,
+  } = useDashboardData(user?.uid);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"Paid" | "Received">("Paid");
@@ -149,7 +157,7 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex w-full items-center justify-between p-5">
         <div>
-          <h1 className="text-[24px] font-bold">Hi {user},</h1>
+          <h1 className="text-[24px] font-bold">{userData ? `Hi ${userData.firstName},` : "Loading..."}</h1>
           <p>Here's how your money looks today!</p>
         </div>
         <div className="flex items-center justify-center rounded-full bg-primary h-[40px] w-[40px]">
@@ -165,13 +173,13 @@ export default function Dashboard() {
               Money you're getting back
             </h5>
             <h3 className="text-muted text-xl font-semibold text-end">
-              ₱ {lendmoney}.00
+              ₱ {totalReceive?.toLocaleString() ?? "0.00"}
             </h3>
           </div>
           <div className="flex flex-col justify-between p-3 rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card h-[124px]">
             <h5 className="text-[16px] font-semibold">Money you owe</h5>
             <h3 className="text-xl font-bold mt-5 text-end">
-              ₱ {owedmoney}.00
+              ₱ {totalOwed?.toLocaleString() ?? "0.00"}
             </h3>
           </div>
           <div className="col-span-2 flex flex-col justify-between bg-[var(--primary-100)] border-2 border-[var(--primary)] p-3 rounded-lg">
@@ -179,7 +187,21 @@ export default function Dashboard() {
               Next transaction due
             </h5>
             <h3 className="mt-5 text-[#333]">
-              Upcoming payment: ₱{owedmoney} due on May 10, 2025.
+                {nextTransact ? (
+                <>
+                    {nextTransact.type === "borrow" ? (
+                    `Upcoming payment: ₱${nextTransact.amount.toLocaleString()} due on ${new Date(
+                        nextTransact.dueDate.toDate?.() || nextTransact.dueDate
+                    ).toLocaleDateString()}`
+                    ) : (
+                    `Upcoming collection: ₱${nextTransact.amount.toLocaleString()} expected on ${new Date(
+                        nextTransact.dueDate.toDate?.() || nextTransact.dueDate
+                    ).toLocaleDateString()}`
+                    )}
+                </>
+                ) : (
+                "No upcoming transactions"
+                )}
             </h3>
           </div>
         </div>
