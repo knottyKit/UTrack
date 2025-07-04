@@ -9,6 +9,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { useAuth } from "@/hooks/auth.hooks";
 import { useUserData } from "@/hooks/user.hooks";
 import { useDashboardData } from "./dashboard.hooks";
+import { TransactionCard } from "@/components/TransactionCard";
 
 const sharedUsers = [
   { name: "Wathuffen Vella", avatar: images.user1 },
@@ -17,113 +18,13 @@ const sharedUsers = [
   { name: "Lucie Grey", avatar: images.user4 },
 ];
 
-const TransactionCard = ({
-  id,
-  type,
-  title,
-  dueDate,
-  amount,
-  note,
-  badgeColor,
-  buttonColor,
-  onActionClick,
-  onDetailClick,
-}: {
-  id: number;
-  type: "To Pay" | "To Receive";
-  title: string;
-  dueDate: string;
-  amount: number;
-  note: string;
-  badgeColor: string;
-  buttonColor: string;
-  onActionClick: (amount: number, title: string) => void;
-  onDetailClick: (id: number) => void;
-}) => (
-  <div className="card rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card p-3">
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-1">
-        <span className={`h-[14px] w-[14px] rounded-full ${badgeColor}`}></span>
-        <p>{type}</p>
-      </div>
-      <button className="cursor-pointer w-[40px] flex items-end justify-end">
-        <BiDotsVerticalRounded size={24} />
-      </button>
-    </div>
-
-    <div className="flex justify-between items-end my-5">
-      <div className="flex flex-col">
-        <p className="text-[16px] font-medium">{title}</p>
-        <h5>
-          Due on <span className="text-primary font-medium">{dueDate}</span>
-        </h5>
-      </div>
-      <h5 className="font-semibold text-[24px]">
-        ₱
-        {amount.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-      </h5>
-    </div>
-
-    <div className="bg-[var(--grey-bg)] dark:bg-input p-2 rounded-sm my-3 min-h-[40px]">
-      <p className="text-nowrap text-[12px] text-muted-">{note}</p>
-    </div>
-
-    <div className="w- flex items-center justify-between gap-3 border-t py-3">
-      <button
-        className={` border-1 ${buttonColor} rounded-full p-3 flex w-full items-center justify-center text-white font-medium uppercase tracking-wide cursor-pointer`}
-        onClick={() => onActionClick(amount, title)}
-      >
-        {type === "To Pay" ? "Paid" : "Received"}
-      </button>
-      {/* <button
-        className=" border-1 border-secondary bg-transparent hover:bg-muted text-secondary rounded-full p-3 flex w-[50%] items-center justify-center  font-medium uppercase tracking-wide cursor-pointer"
-        onClick={() => onDetailClick(id)}
-      >
-        Detail
-      </button> */}
-    </div>
-
-    <div className="flex flex-row-reverse items-center justify-start gap-1 pt-2 border-t">
-      <div className="flex -space-x-2">
-        {sharedUsers.slice(0, 3).map((user, i) => (
-          <div
-            key={i}
-            className="relative h-7 w-7 rounded-full overflow-hidden border-2 border-white dark:border-background"
-          >
-            <Image
-              src={user.avatar}
-              alt={user.name}
-              fill
-              className="object-cover"
-            />
-          </div>
-        ))}
-        {sharedUsers.length > 3 && (
-          <div className="h-7 w-7 rounded-full bg-[var(--primary-100)] text-[10px] flex items-center justify-center text-muted-foreground border-2 border-white font-semibold">
-            +{sharedUsers.length - 3}
-          </div>
-        )}
-      </div>
-      <span className="text-xs text-muted-foreground">
-        Shared with {sharedUsers.length} people
-      </span>
-    </div>
-  </div>
-);
-
 export default function Dashboard() {
   const router = useRouter();
   const { user } = useAuth();
   const { userData } = useUserData(user?.uid);
-  const {
-    totalOwed,
-    totalReceive,
-    nextTransact,
-    loading,
-  } = useDashboardData(user?.uid);
+  const { totalOwed, totalReceive, nextTransact, loading } = useDashboardData(
+    user?.uid
+  );
 
   const [modalOpen, setModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"Paid" | "Received">("Paid");
@@ -157,7 +58,9 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex w-full items-center justify-between p-5">
         <div>
-          <h1 className="text-[24px] font-bold">{userData ? `Hi ${userData.firstName},` : "Loading..."}</h1>
+          <h1 className="text-[24px] font-bold">
+            {userData ? `Hi ${userData.firstName},` : "Loading..."}
+          </h1>
           <p>Here's how your money looks today!</p>
         </div>
         <div className="flex items-center justify-center rounded-full bg-primary h-[40px] w-[40px]">
@@ -187,21 +90,19 @@ export default function Dashboard() {
               Next transaction due
             </h5>
             <h3 className="mt-5 text-[#333]">
-                {nextTransact ? (
+              {nextTransact ? (
                 <>
-                    {nextTransact.type === "borrow" ? (
-                    `Upcoming payment: ₱${nextTransact.amount.toLocaleString()} due on ${new Date(
+                  {nextTransact.type === "borrow"
+                    ? `Upcoming payment: ₱${nextTransact.amount.toLocaleString()} due on ${new Date(
                         nextTransact.dueDate.toDate?.() || nextTransact.dueDate
-                    ).toLocaleDateString()}`
-                    ) : (
-                    `Upcoming collection: ₱${nextTransact.amount.toLocaleString()} expected on ${new Date(
+                      ).toLocaleDateString()}`
+                    : `Upcoming collection: ₱${nextTransact.amount.toLocaleString()} expected on ${new Date(
                         nextTransact.dueDate.toDate?.() || nextTransact.dueDate
-                    ).toLocaleDateString()}`
-                    )}
+                      ).toLocaleDateString()}`}
                 </>
-                ) : (
+              ) : (
                 "No upcoming transactions"
-                )}
+              )}
             </h3>
           </div>
         </div>
@@ -232,7 +133,7 @@ export default function Dashboard() {
                     ₱{item.amount.toLocaleString()}
                   </p>
                   <p className="text-sm text-gray-500">From: {item.user}</p>
-                  <button       
+                  <button
                     onClick={() => {
                       setActionType(
                         item.type === "To Pay" ? "Paid" : "Received"
@@ -261,6 +162,7 @@ export default function Dashboard() {
 
           <div className="mt-5 flex flex-col gap-3">
             <TransactionCard
+              sharedUsers={sharedUsers}
               id={1}
               type="To Receive"
               title={"Phone Loan"}
@@ -279,6 +181,7 @@ export default function Dashboard() {
               buttonColor="bg-[var(--green)] border-[var(--green)] hover:bg-[var(--green-300)]"
             />
             <TransactionCard
+              sharedUsers={sharedUsers}
               id={2}
               type="To Pay"
               title="Phone Loan"
