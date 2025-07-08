@@ -11,6 +11,7 @@ import { useUserData } from "@/hooks/user.hooks";
 import { useDashboardData } from "./dashboard.hooks";
 import { TransactionCard } from "@/components/TransactionCard";
 import DisputeModal from "@/components/DisputeModal";
+import ConfirmationCard from "@/components/ConfirmationCard";
 
 const sharedUsers = [
   { name: "Wathuffen Vella", avatar: images.user1 },
@@ -29,14 +30,8 @@ export default function Dashboard() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [disputeModalOpen, setDisputeModalOpen] = useState(false);
-  const [actionType, setActionType] = useState<"Paid" | "Received">("Paid");
-  const [modalLabel, setModalLabel] = useState("");
   const [modalAmount, setModalAmount] = useState(0);
-
-  const handleAction = (type: "Paid" | "Received") => {
-    setActionType(type);
-    setModalOpen(true);
-  };
+  const [modalTitle, setModalTitle] = useState("");
 
   const confirmations = [
     {
@@ -45,6 +40,8 @@ export default function Dashboard() {
       amount: 4000,
       type: "To Receive",
       user: "John Smith",
+      paidDate: "2023-10-01T12:00:00Z", // Example date
+      note: "Monthly installment for the phone loan",
     },
     {
       id: 2,
@@ -52,6 +49,9 @@ export default function Dashboard() {
       amount: 1500,
       type: "To Pay",
       user: "Jane Doe",
+      paidDate: "2023-10-01T12:00:00Z", // Example date
+      note: "Monthly installment for the phone loan",
+      attachmentUrl: "/assets/proof.png", // Example attachment URL
     },
   ];
 
@@ -73,7 +73,7 @@ export default function Dashboard() {
       {/* Summary Cards */}
       <div className="p-5">
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col justify-between p-3 rounded-lg border-2 bg-secondary border-secondary dark:bg-secondary/70 dark:border-secondary/80 h-[124px]">
+          <div className="flex flex-col justify-between p-3 rounded-xl border-2 bg-secondary border-secondary dark:bg-secondary/70 dark:border-secondary/80 h-[124px]">
             <h5 className="text-[16px] text-muted font-semibold">
               Money you're getting back
             </h5>
@@ -81,13 +81,13 @@ export default function Dashboard() {
               ₱ {totalReceive?.toLocaleString() ?? "0.00"}
             </h3>
           </div>
-          <div className="flex flex-col justify-between p-3 rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card h-[124px]">
+          <div className="flex flex-col justify-between p-3 rounded-xl border-2 border-secondary dark:border-muted bg-white dark:bg-card h-[124px]">
             <h5 className="text-[16px] font-semibold">Money you owe</h5>
             <h3 className="text-xl font-bold mt-5 text-end">
               ₱ {totalOwed?.toLocaleString() ?? "0.00"}
             </h3>
           </div>
-          <div className="col-span-2 flex flex-col justify-between bg-[var(--primary-100)] border-2 border-[var(--primary)] p-3 rounded-lg">
+          <div className="col-span-2 flex flex-col justify-between bg-[var(--primary-100)] border-2 border-[var(--primary)] p-3 rounded-xl">
             <h5 className="text-[16px] font-semibold text-[#333]">
               Next transaction due
             </h5>
@@ -111,105 +111,112 @@ export default function Dashboard() {
 
         {/* Confirmations Section */}
         <div className="mt-10">
-          <h3 className="text-lg font-semibold">Confirmations needed</h3>
+          <h3 className="text-lg font-semibold">Your pending confirmations</h3>
           <p className="text-muted-foreground">
-            Approve pending transactions from other users.
+            Review and confirm payments submitted by other users. Make sure
+            everything matches before finalizing.
           </p>
 
           <div className="mt-5 flex flex-col gap-3">
             {confirmations.length === 0 ? (
               <p className="text-center text-gray-500">
-                No confirmations at this time.
+                You have no pending confirmations at the moment.
               </p>
             ) : (
               confirmations.map((item) => (
-                <div
+                <ConfirmationCard
                   key={item.id}
-                  className="card rounded-lg border-2 border-secondary dark:border-muted bg-white dark:bg-card p-3"
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">{item.label}</span>
-                    <span className="text-gray-500 text-sm">{item.type}</span>
-                  </div>
-                  <p className="text-lg font-bold">
-                    ₱{item.amount.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-gray-500">From: {item.user}</p>
-                  <div className="mt-10 flex  gap-2">
-                    <button
-                      onClick={() => {
-                        setActionType(
-                          item.type === "To Pay" ? "Paid" : "Received"
-                        );
-                        setModalLabel(item.label);
-                        setModalAmount(item.amount);
-                        setModalOpen(true);
-                      }}
-                      className="w-full uppercase h-[47px] bg-primary text-white rounded-full py-2 text-sm font-medium mt-2"
-                    >
-                      Confirm
-                    </button>
-                    <button
-                      onClick={() => {
-                        setDisputeModalOpen(true);
-                      }}
-                      className="w-full uppercase h-[47px] bg-neutral-800 text-white rounded-full py-2 text-sm font-medium mt-2"
-                    >
-                      Dispute
-                    </button>
-                  </div>
-                </div>
+                  id={item.id}
+                  label={item.label}
+                  amount={item.amount}
+                  user={item.user}
+                  paidDate={item.paidDate} // pass the timestamp of when borrower clicked "paid"
+                  note={item.note}
+                  attachmentUrl={item.attachmentUrl} // if provided
+                  onConfirm={() => {
+                    setModalAmount(item.amount);
+                    setModalOpen(true);
+                  }}
+                  onDispute={() => {
+                    setDisputeModalOpen(true);
+                  }}
+                />
               ))
             )}
           </div>
         </div>
 
-        {/* Upcoming Transactions */}
+        {/* Upcoming To Pay Transactions */}
         <div className="mt-10">
-          <h3 className="text-lg font-semibold">Your upcoming transactions</h3>
+          <h3 className="text-lg font-semibold">Your upcoming payments</h3>
           <p className="text-muted-foreground">
-            Keep track of what’s due and when. Payments you owe and what’s
-            coming back to you — all in one place.
+            Stay on top of your dues and avoid late fees. Review and settle any
+            payments you need to make here.
           </p>
 
           <div className="mt-5 flex flex-col gap-3">
             <TransactionCard
               sharedUsers={sharedUsers}
               id={1}
-              type="To Receive"
-              title={"Phone Loan"}
-              dueDate="Mon, 2 JUN 2025"
-              amount={4000.0}
-              note="Notes kase wala lang trip ko lang"
-              badgeColor="bg-[var(--green)]"
+              title="Laptop Payment"
+              dueDate="Mon, 5 JUL 2025"
+              amount={15000}
+              note="Monthly installment"
+              buttonColor="bg-primary border-primary"
               onActionClick={(amount, title) => {
-                handleAction("Received");
-                setModalLabel(title);
                 setModalAmount(amount);
+                setModalTitle(title);
+                setModalOpen(true);
               }}
-              onDetailClick={(id) => {
-                router.push(`/details/${id}`);
-              }}
-              buttonColor="bg-[var(--green)] border-[var(--green)] hover:bg-[var(--green-300)]"
+              onDetailClick={(id) => console.log("Detail clicked", id)}
             />
             <TransactionCard
               sharedUsers={sharedUsers}
               id={2}
-              type="To Pay"
-              title="Phone Loan"
-              dueDate="Mon, 2 JUN 2025"
-              amount={4000.0}
-              note="Notes kase wala lang trip ko lang"
-              badgeColor="bg-primary"
+              title="Laptop Payment"
+              dueDate="Mon, 9 JUL 2025"
+              amount={54000}
+              note="Monthly installment"
+              buttonColor="bg-primary border-primary"
               onActionClick={(amount, title) => {
-                handleAction("Paid");
-                setModalLabel(title);
                 setModalAmount(amount);
+                setModalTitle(title);
+                setModalOpen(true);
               }}
-              onDetailClick={(id) => {
-                router.push(`/details/${id}`);
+              onDetailClick={(id) => console.log("Detail clicked", id)}
+            />
+            <TransactionCard
+              sharedUsers={sharedUsers}
+              id={3}
+              paidDate="2025-07-09"
+              title="Laptop Payment"
+              dueDate="Mon, 9 JUL 2025"
+              amount={4000}
+              note="Monthly installment"
+              buttonColor="bg-primary border-primary"
+              onActionClick={(amount, title) => {
+                setModalAmount(amount);
+                setModalTitle(title);
+                setModalOpen(true);
               }}
-              buttonColor=" bg-primary border-primary"
+              onDetailClick={(id) => console.log("Detail clicked", id)}
+            />
+            <TransactionCard
+              sharedUsers={sharedUsers}
+              id={3}
+              paidDate="2025-07-09"
+              title="Laptop Payment"
+              dueDate="Mon, 9 JUL 2025"
+              status="waiting"
+              amount={3000}
+              note="Monthly installment"
+              buttonColor="bg-primary border-primary"
+              onActionClick={(amount, title) => {
+                setModalAmount(amount);
+                setModalTitle(title);
+                setModalOpen(true);
+              }}
+              onDetailClick={(id) => console.log("Detail clicked", id)}
             />
           </div>
         </div>
@@ -225,13 +232,12 @@ export default function Dashboard() {
       </div>
 
       <ConfirmModal
-        label={modalLabel}
+        label="Dinner"
         amount={modalAmount}
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        actionLabel={actionType}
         onConfirm={(desc, file) => {
-          console.log("Confirmed", actionType, desc, file);
+          console.log("Confirmed", desc, file);
           // Handle your logic here (e.g. API call)
         }}
       />

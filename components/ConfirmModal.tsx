@@ -15,7 +15,6 @@ interface ConfirmModalProps {
   open: boolean;
   onClose: () => void;
   onConfirm: (description: string, file?: File) => void;
-  actionLabel: "Paid" | "Received";
 }
 
 export default function ConfirmModal({
@@ -24,7 +23,6 @@ export default function ConfirmModal({
   open,
   onClose,
   onConfirm,
-  actionLabel,
 }: ConfirmModalProps) {
   const [description, setDescription] = React.useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -55,7 +53,7 @@ export default function ConfirmModal({
         <DialogPanel className="absolute left-1/2 transform -translate-x-1/2 bottom-0 sm:bottom-auto sm:top-40 bg-white dark:bg-popover pb-15 rounded-t-2xl sm:rounded-2xl shadow-xl w-full max-w-lg p-6 z-20">
           <div className="flex justify-between items-center mb-2">
             <DialogTitle as="h3" className="text-lg font-semibold leading-6">
-              Confirm {actionLabel}
+              Confirm paid
             </DialogTitle>
             <button onClick={onClose}>
               <X className="w-5 h-5 text-gray-400" />
@@ -127,7 +125,7 @@ export default function ConfirmModal({
               className="flex flex-1 bg-primary p-5 cursor-pointer rounded-full h-[47px] text-white "
               onClick={handleSubmit}
             >
-              Confirm {actionLabel}
+              Confirm paid
             </Button>
           </div>
         </DialogPanel>

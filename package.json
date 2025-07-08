@@ -28,6 +28,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.57.0",
     "react-icons": "^5.5.0",
+    "react-medium-image-zoom": "^5.2.14",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.0",
     "web-push": "^3.6.7",
